@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Daily Bread Link Generator</title>
+<title>Daily Bread Generator</title>
 
 <style>
 body {
@@ -13,9 +13,7 @@ body {
   margin: auto;
 }
 
-h2 {
-  text-align: center;
-}
+h2 { text-align: center; }
 
 input, select {
   width: 100%;
@@ -37,11 +35,16 @@ button {
 }
 
 .result {
-  margin-top: 20px;
+  margin-top: 15px;
   padding: 10px;
   background: #f5f5f5;
   border-radius: 8px;
   word-break: break-all;
+}
+
+.qr {
+  text-align: center;
+  margin-top: 20px;
 }
 </style>
 </head>
@@ -67,12 +70,21 @@ button {
 <label>Message (optional)</label>
 <input id="msg" placeholder="Be still / Keep going">
 
-<button onclick="generate()">Generate Link</button>
+<button onclick="generate()">Generate</button>
 
 <div class="result" id="result"></div>
+
 <button onclick="copy()">Copy Link</button>
 
+<div class="qr">
+  <img id="qrImg" width="200" />
+  <br>
+  <button onclick="downloadQR()">Download QR</button>
+</div>
+
 <script>
+let currentQR = "";
+
 function generate() {
   const base = "https://weekrend.github.io/daily-bread/";
 
@@ -92,12 +104,26 @@ function generate() {
   }
 
   document.getElementById("result").innerText = url;
+
+  // QR generator API
+  currentQR = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(url);
+
+  document.getElementById("qrImg").src = currentQR;
 }
 
 function copy() {
   const text = document.getElementById("result").innerText;
   navigator.clipboard.writeText(text);
-  alert("Copied!");
+  alert("Link copied!");
+}
+
+function downloadQR() {
+  if(!currentQR) return;
+
+  const a = document.createElement("a");
+  a.href = currentQR;
+  a.download = "qr-code.png";
+  a.click();
 }
 </script>
 
