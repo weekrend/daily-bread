@@ -117,10 +117,6 @@ document.body.style.background = themes[type] || themes["peace"];
 //   document.querySelector(".card").style.background = "rgba(0,0,0,0.4)";
 // }
 
-if(type === "strength"){
-  document.getElementById("ref").innerText += " ✝️";
-}
-
 /* ICON */
 const icons = {
   love: "❤️",
@@ -306,6 +302,10 @@ const selected = list[seededIndex(seed, list.length)];
 document.getElementById("verse").innerText = "“" + selected.text + "”";
 document.getElementById("ref").innerText = selected.ref;
 
+if(type === "strength"){
+  document.getElementById("ref").innerText += " ✝️";
+}
+  
 </script>
 
 </body>
