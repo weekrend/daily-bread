@@ -19,6 +19,10 @@ body {
   color: #2c2c2c;
 }
 
+.strength-accent {
+  color: #b58b3a;
+}
+
 .card {
   backdrop-filter: blur(20px);
   background: rgba(255,255,255,0.6);
@@ -61,7 +65,7 @@ body {
 .divider {
   width: 40px;
   height: 2px;
-  background: #ddd;
+  background: linear-gradient(to right, transparent, #b58b3a, transparent);
   margin: 16px auto;
   border-radius: 2px;
 }
@@ -95,22 +99,33 @@ const msg = params.get("msg") || "";
 const themes = {
   love: "linear-gradient(160deg, #ffe4ec, #fff)",
   peace: "linear-gradient(160deg, #dfe9f3, #ffffff)",
-  strength: "linear-gradient(160deg, #2c2c2c, #000000)",
+  strength: "linear-gradient(160deg, #f4efe7, #ffffff)",
   guidance: "linear-gradient(160deg, #ece9ff, #ffffff)"
 };
 
+// const themes = {
+//   love: "linear-gradient(160deg, #ffe4ec, #fff)",
+//   peace: "linear-gradient(160deg, #dfe9f3, #ffffff)",
+//   strength: "linear-gradient(160deg, #2c2c2c, #000000)",
+//   guidance: "linear-gradient(160deg, #ece9ff, #ffffff)"
+// };
+
 document.body.style.background = themes[type] || themes["peace"];
 
+// if(type === "strength"){
+//   document.body.style.color = "#f5f5f5";
+//   document.querySelector(".card").style.background = "rgba(0,0,0,0.4)";
+// }
+
 if(type === "strength"){
-  document.body.style.color = "#f5f5f5";
-  document.querySelector(".card").style.background = "rgba(0,0,0,0.4)";
+  document.getElementById("ref").innerText += " ✝️";
 }
 
 /* ICON */
 const icons = {
   love: "❤️",
   peace: "🌿",
-  strength: "💪",
+  strength: "✝️"
   guidance: "✨"
 };
 
