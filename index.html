@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Bread 🍞</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Inter:wght@300;400&display=swap');
+
+body {
+  margin: 0;
+  height: 100vh;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, #dfe9f3, #ffffff);
+  color: #2c2c2c;
+}
+
+.card {
+  backdrop-filter: blur(20px);
+  background: rgba(255,255,255,0.6);
+  border-radius: 24px;
+  padding: 30px 24px;
+  width: 90%;
+  max-width: 420px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.title {
+  font-size: 14px;
+  letter-spacing: 2px;
+  color: #777;
+  margin-bottom: 16px;
+}
+
+.name {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  margin-bottom: 18px;
+  opacity: 0.85;
+  white-space: pre-line;
+}
+
+.verse {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.ref {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.divider {
+  width: 40px;
+  height: 2px;
+  background: #ddd;
+  margin: 16px auto;
+  border-radius: 2px;
+}
+
+.footer {
+  font-size: 12px;
+  color: #aaa;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <div class="title" id="title">🍞 DAILY BREAD</div>
+  <div class="name" id="name"></div>
+  <div class="verse" id="verse">Loading...</div>
+  <div class="divider"></div>
+  <div class="ref" id="ref"></div>
+  <div class="footer">Scan again tomorrow ✨</div>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const name = params.get("name") || "";
+const type = params.get("type") || "peace";
+const date = params.get("date") || "";
+const msg = params.get("msg") || "";
+
+/* THEMES */
+const themes = {
+  love: "linear-gradient(160deg, #ffe4ec, #fff)",
+  peace: "linear-gradient(160deg, #dfe9f3, #ffffff)",
+  strength: "linear-gradient(160deg, #2c2c2c, #000000)",
+  guidance: "linear-gradient(160deg, #ece9ff, #ffffff)"
+};
+
+document.body.style.background = themes[type] || themes["peace"];
+
+if(type === "strength"){
+  document.body.style.color = "#f5f5f5";
+  document.querySelector(".card").style.background = "rgba(0,0,0,0.4)";
+}
+
+/* ICON */
+const icons = {
+  love: "❤️",
+  peace: "🌿",
+  strength: "💪",
+  guidance: "✨"
+};
+
+document.getElementById("title").innerText =
+  (icons[type] || "🍞") + " DAILY BREAD";
+
+/* META DISPLAY */
+let metaText = "";
+
+if(type === "love"){
+  metaText = name + (date ? "\n" + date : "");
+}
+else if(type === "peace"){
+  metaText = name + "\n" + (msg || "Be still");
+}
+else if(type === "strength"){
+  metaText = name + "\n" + (msg || "Faith Over Fear");
+}
+else if(type === "guidance"){
+  metaText = name + "\n" + (msg || "Trust His Plan");
+}
+
+document.getElementById("name").innerText = metaText;
+
+/* FULL VERSE DATABASE (30 each) */
+const verses = {
+
+/* LOVE */
+love: [
+{ text:"Love is patient, love is kind.", ref:"1 Corinthians 13:4" },
+{ text:"Love never fails.", ref:"1 Corinthians 13:8" },
+{ text:"Above all, love each other deeply.", ref:"1 Peter 4:8" },
+{ text:"We love because He first loved us.", ref:"1 John 4:19" },
+{ text:"Let all that you do be done in love.", ref:"1 Corinthians 16:14" },
+{ text:"God is love.", ref:"1 John 4:8" },
+{ text:"Love your neighbor as yourself.", ref:"Mark 12:31" },
+{ text:"Clothe yourselves with love.", ref:"Colossians 3:14" },
+{ text:"Perfect love drives out fear.", ref:"1 John 4:18" },
+{ text:"The greatest of these is love.", ref:"1 Corinthians 13:13" },
+{ text:"Serve one another in love.", ref:"Galatians 5:13" },
+{ text:"Walk in love.", ref:"Ephesians 5:2" },
+{ text:"Remain in my love.", ref:"John 15:9" },
+{ text:"Be devoted to one another in love.", ref:"Romans 12:10" },
+{ text:"A friend loves at all times.", ref:"Proverbs 17:17" },
+{ text:"Let love and faithfulness never leave you.", ref:"Proverbs 3:3" },
+{ text:"Love binds everything together.", ref:"Colossians 3:14" },
+{ text:"Love your enemies.", ref:"Luke 6:27" },
+{ text:"Do everything in love.", ref:"1 Corinthians 16:14" },
+{ text:"Love covers all wrongs.", ref:"Proverbs 10:12" },
+{ text:"Let your love grow.", ref:"Philippians 1:9" },
+{ text:"Faith expressing itself through love.", ref:"Galatians 5:6" },
+{ text:"Keep yourselves in God's love.", ref:"Jude 1:21" },
+{ text:"Love each other as I have loved you.", ref:"John 15:12" },
+{ text:"Be rooted in love.", ref:"Ephesians 3:17" },
+{ text:"Hatred stirs conflict, love brings peace.", ref:"Proverbs 10:12" },
+{ text:"God’s love endures forever.", ref:"Psalm 136:1" },
+{ text:"The Lord is full of compassion and love.", ref:"Psalm 103:8" },
+{ text:"Love the Lord your God.", ref:"Matthew 22:37" },
+{ text:"Let all you do be in love.", ref:"1 Corinthians 16:14" }
+],
+
+/* PEACE */
+peace: [
+{ text:"Be still, and know that I am God.", ref:"Psalm 46:10" },
+{ text:"Peace I leave with you.", ref:"John 14:27" },
+{ text:"Do not be anxious about anything.", ref:"Philippians 4:6" },
+{ text:"The peace of God will guard your hearts.", ref:"Philippians 4:7" },
+{ text:"Cast all your anxiety on Him.", ref:"1 Peter 5:7" },
+{ text:"Come to me, and I will give you rest.", ref:"Matthew 11:28" },
+{ text:"In peace I will lie down and sleep.", ref:"Psalm 4:8" },
+{ text:"The Lord gives peace.", ref:"Psalm 29:11" },
+{ text:"Return to your rest, my soul.", ref:"Psalm 116:7" },
+{ text:"The Lord is my shepherd.", ref:"Psalm 23:1" },
+{ text:"He restores my soul.", ref:"Psalm 23:3" },
+{ text:"Let the peace of Christ rule.", ref:"Colossians 3:15" },
+{ text:"Great peace have those who love your law.", ref:"Psalm 119:165" },
+{ text:"God is our refuge and strength.", ref:"Psalm 46:1" },
+{ text:"The Lord is near to all who call.", ref:"Psalm 145:18" },
+{ text:"Be strong and take heart.", ref:"Psalm 31:24" },
+{ text:"He gives strength to the weary.", ref:"Isaiah 40:29" },
+{ text:"Rest in the Lord.", ref:"Psalm 37:7" },
+{ text:"The Lord surrounds His people.", ref:"Psalm 125:2" },
+{ text:"Do not let your hearts be troubled.", ref:"John 14:1" },
+{ text:"The Lord watches over you.", ref:"Psalm 121:5" },
+{ text:"You are my hiding place.", ref:"Psalm 32:7" },
+{ text:"Trust in Him at all times.", ref:"Psalm 62:8" },
+{ text:"Perfect peace comes from God.", ref:"Isaiah 26:3" },
+{ text:"The Lord blesses His people with peace.", ref:"Psalm 29:11" },
+{ text:"Be calm and trust God.", ref:"Psalm 37:7" },
+{ text:"God gives rest to the weary.", ref:"Matthew 11:28" },
+{ text:"The Lord is gracious and compassionate.", ref:"Psalm 145:8" },
+{ text:"In quietness and trust is your strength.", ref:"Isaiah 30:15" },
+{ text:"Peace be with you.", ref:"John 20:21" }
+],
+
+/* STRENGTH */
+strength: [
+{ text:"I can do all things through Christ.", ref:"Philippians 4:13" },
+{ text:"The Lord is my strength.", ref:"Psalm 28:7" },
+{ text:"God is our refuge and strength.", ref:"Psalm 46:1" },
+{ text:"Be strong and courageous.", ref:"Joshua 1:9" },
+{ text:"The joy of the Lord is your strength.", ref:"Nehemiah 8:10" },
+{ text:"He gives strength to the weary.", ref:"Isaiah 40:29" },
+{ text:"My grace is sufficient for you.", ref:"2 Corinthians 12:9" },
+{ text:"The Lord is my light and salvation.", ref:"Psalm 27:1" },
+{ text:"Stand firm in the faith.", ref:"1 Corinthians 16:13" },
+{ text:"Be strong in the Lord.", ref:"Ephesians 6:10" },
+{ text:"The Lord upholds all who fall.", ref:"Psalm 145:14" },
+{ text:"Cast your cares on the Lord.", ref:"Psalm 55:22" },
+{ text:"The Lord is my rock.", ref:"Psalm 18:2" },
+{ text:"He renews my strength.", ref:"Isaiah 40:31" },
+{ text:"Those who hope in the Lord will renew strength.", ref:"Isaiah 40:31" },
+{ text:"Fear not, for I am with you.", ref:"Isaiah 41:10" },
+{ text:"Take heart, I have overcome the world.", ref:"John 16:33" },
+{ text:"The Lord is my helper.", ref:"Hebrews 13:6" },
+{ text:"Be strong and do not give up.", ref:"2 Chronicles 15:7" },
+{ text:"The Lord fights for you.", ref:"Exodus 14:14" },
+{ text:"God is my strength.", ref:"Psalm 73:26" },
+{ text:"He gives power to the weak.", ref:"Isaiah 40:29" },
+{ text:"He will sustain you.", ref:"Psalm 55:22" },
+{ text:"The Lord is a strong tower.", ref:"Proverbs 18:10" },
+{ text:"God strengthens the weak.", ref:"Isaiah 40:29" },
+{ text:"The Lord gives victory.", ref:"1 Corinthians 15:57" },
+{ text:"Be strong and courageous always.", ref:"Joshua 1:9" },
+{ text:"The Lord is my shield.", ref:"Psalm 28:7" },
+{ text:"He lifts me up.", ref:"Psalm 145:14" },
+{ text:"God is my refuge.", ref:"Psalm 46:1" }
+],
+
+/* GUIDANCE */
+guidance: [
+{ text:"Trust in the Lord with all your heart.", ref:"Proverbs 3:5" },
+{ text:"He will make your paths straight.", ref:"Proverbs 3:6" },
+{ text:"Your word is a lamp to my feet.", ref:"Psalm 119:105" },
+{ text:"The Lord will guide you always.", ref:"Isaiah 58:11" },
+{ text:"I will instruct you and teach you.", ref:"Psalm 32:8" },
+{ text:"Commit your way to the Lord.", ref:"Psalm 37:5" },
+{ text:"In all your ways submit to Him.", ref:"Proverbs 3:6" },
+{ text:"The steps of a good man are ordered.", ref:"Psalm 37:23" },
+{ text:"Ask and it will be given.", ref:"Matthew 7:7" },
+{ text:"Seek and you will find.", ref:"Matthew 7:7" },
+{ text:"The Lord directs your steps.", ref:"Proverbs 16:9" },
+{ text:"Show me your ways, Lord.", ref:"Psalm 25:4" },
+{ text:"Teach me your paths.", ref:"Psalm 25:5" },
+{ text:"The Lord is my guide.", ref:"Psalm 48:14" },
+{ text:"He leads me in the right paths.", ref:"Psalm 23:3" },
+{ text:"Ask God for wisdom.", ref:"James 1:5" },
+{ text:"Your ears will hear His voice.", ref:"Isaiah 30:21" },
+{ text:"The Lord gives wisdom.", ref:"Proverbs 2:6" },
+{ text:"He guards your path.", ref:"Proverbs 2:8" },
+{ text:"Guide me in your truth.", ref:"Psalm 25:5" },
+{ text:"The Lord watches over your way.", ref:"Psalm 121:8" },
+{ text:"He leads beside still waters.", ref:"Psalm 23:2" },
+{ text:"He will counsel you.", ref:"Psalm 32:8" },
+{ text:"Follow me.", ref:"Matthew 4:19" },
+{ text:"The Spirit will guide you.", ref:"John 16:13" },
+{ text:"Walk in His ways.", ref:"Deuteronomy 5:33" },
+{ text:"The Lord establishes your steps.", ref:"Psalm 37:23" },
+{ text:"God lights your path.", ref:"Psalm 119:105" },
+{ text:"Trust His direction.", ref:"Proverbs 3:6" },
+{ text:"He leads you forward.", ref:"Isaiah 58:11" }
+]
+
+};
+
+/* DAILY SEED */
+const today = new Date();
+const seed = today.getFullYear()*10000 + (today.getMonth()+1)*100 + today.getDate();
+
+function seededIndex(seed, max){
+  const x = Math.sin(seed)*10000;
+  return Math.floor((x - Math.floor(x))*max);
+}
+
+const list = verses[type] || verses["peace"];
+const selected = list[seededIndex(seed, list.length)];
+
+document.getElementById("verse").innerText = "“" + selected.text + "”";
+document.getElementById("ref").innerText = selected.ref;
+
+</script>
+
+</body>
+</html>
