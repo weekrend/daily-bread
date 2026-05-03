@@ -72,9 +72,29 @@ body {
 }
 
 .footer-brand {
+  margin-top: 24px;
+  text-align: center;
+  color: #b8b8b8;
   font-size: 11px;
-  color: #bbb;
-  margin-top: 20px;
+}
+
+.brand-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.brand-top img {
+  height: 14px;
+  opacity: 0.7;
+}
+
+.brand-product {
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 2px;
 }
   
 .share-btn {
@@ -126,10 +146,15 @@ body {
       <button class="share-btn">Get Your Daily Bread Mug ☕</button>
     </a>
   </div>
+  
   <div class="footer-brand">
-    <img src="assets/logo.png" style="height:16px; vertical-align:middle;">
-    <span> © 2026 Weekrend Project · Daily Bread ✨</span>
+    <div class="brand-top">
+      <img src="assets/logo.png"> <span>Weekrend Project</span>
+    </div>
+    <div class="brand-product">Daily Bread ✨</div>
+    <div class="brand-copy">© 2026</div>
   </div>
+  
 </div>
 
 <script>
