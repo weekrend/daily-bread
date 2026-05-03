@@ -1,111 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Daily Bread Generator</title>
-
-<style>
-body {
-  font-family: Arial, sans-serif;
-  padding: 20px;
-  max-width: 500px;
-  margin: auto;
-}
-
-h2 { text-align: center; }
-
-input, select {
-  width: 100%;
-  padding: 10px;
-  margin: 8px 0;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
-
-button {
-  width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-  border: none;
-  border-radius: 8px;
-  background: #333;
-  color: white;
-  cursor: pointer;
-}
-
-.result {
-  margin-top: 15px;
-  padding: 10px;
-  background: #f5f5f5;
-  border-radius: 8px;
-  word-break: break-all;
-}
-
-.qr {
-  text-align: center;
-  margin-top: 20px;
-}
-</style>
-</head>
-
-<body>
-
-<h2>🍞 Daily Bread Generator</h2>
-
-<label>Name</label>
-<input id="name" placeholder="Anna ♡ Noah">
-
-<label>Type</label>
-<select id="type">
-  <option value="love">❤️ Love</option>
-  <option value="peace">🌿 Peace</option>
-  <option value="strength">💪 Strength</option>
-  <option value="guidance">✨ Guidance</option>
-</select>
-
-<label>Date (for love only)</label>
-<input id="date" placeholder="08.12.2022">
-
-<label>Message (optional)</label>
-<input id="msg" placeholder="Be still / Keep going">
-
-<button onclick="generate()">Generate</button>
-
-<div class="result" id="result"></div>
-
-<button onclick="copy()">Copy Link</button>
-
-<div class="qr">
-  <img id="qrImg" width="200" />
-  <br>
-  <button onclick="downloadQR()">Download QR</button>
-</div>
-
 <script>
 let currentQR = "";
+
+// 🔐 SAME SECRET as index.html
+const SECRET = "dailybread_secret_key";
+
+// 🔐 Generate token
+function generateToken(name, type) {
+  const raw = name + "|" + type + "|" + SECRET;
+  return btoa(raw).replace(/=/g, "");
+}
 
 function generate() {
   const base = "https://weekrend.github.io/daily-bread/";
 
-  const name = encodeURIComponent(document.getElementById("name").value);
+  const nameRaw = document.getElementById("name").value;
   const type = document.getElementById("type").value;
-  const date = encodeURIComponent(document.getElementById("date").value);
-  const msg = encodeURIComponent(document.getElementById("msg").value);
+  const dateRaw = document.getElementById("date").value;
+  const msgRaw = document.getElementById("msg").value;
 
-  let url = base + "?name=" + name + "&type=" + type;
+  const name = encodeURIComponent(nameRaw);
+  const date = encodeURIComponent(dateRaw);
+  const msg = encodeURIComponent(msgRaw);
 
-  if(type === "love" && date){
+  // 🔐 generate token (IMPORTANT: use RAW value, not encoded)
+  const token = generateToken(nameRaw, type);
+
+  let url = base + "?name=" + name + "&type=" + type + "&t=" + token;
+
+  if(type === "love" && dateRaw){
     url += "&date=" + date;
   }
 
-  if(type !== "love" && msg){
+  if(type !== "love" && msgRaw){
     url += "&msg=" + msg;
   }
 
+  // show result
   document.getElementById("result").innerText = url;
 
-  // QR generator API
+  // QR
   currentQR = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(url);
 
   document.getElementById("qrImg").src = currentQR;
@@ -113,6 +46,8 @@ function generate() {
 
 function copy() {
   const text = document.getElementById("result").innerText;
+  if(!text) return;
+
   navigator.clipboard.writeText(text);
   alert("Link copied!");
 }
@@ -122,10 +57,7 @@ function downloadQR() {
 
   const a = document.createElement("a");
   a.href = currentQR;
-  a.download = "qr-code.png";
+  a.download = "daily-bread-qr.png";
   a.click();
 }
 </script>
-
-</body>
-</html>
