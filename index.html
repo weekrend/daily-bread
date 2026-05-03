@@ -192,6 +192,25 @@ body {
 
 </div>
 <script>
+const SECRET = "dailybread_secret_key";
+
+function validateToken(name, type, token) {
+  const raw = name + "|" + type + "|" + SECRET;
+  const expected = btoa(raw).replace(/=/g, "");
+  return expected === token;
+}
+
+const params = new URLSearchParams(location.search);
+
+const name = params.get("name");
+const type = params.get("type");
+const token = params.get("t");
+
+// ❌ block invalid access
+if (!validateToken(name, type, token)) {
+  window.location.href = "invalid.html";
+}
+  
 const params = new URLSearchParams(window.location.search);
 const name = params.get("name") || "";
 const type = params.get("type") || "peace";
