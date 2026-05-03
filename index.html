@@ -160,7 +160,7 @@ body {
   <div class="name" id="name"></div>
 
   <div class="verse-box" id="verseBox">
-    <div class="verse" id="verse" style="opacity:0;">Loading...</div>
+    <div class="verse" id="verse">Loading...</div>
     <div class="divider"></div>
     <div class="ref" id="ref"></div>
   </div>
@@ -242,7 +242,7 @@ if(sharedBy){
   container.innerHTML = "";
 
   const img = document.createElement("img");
-  img.src = mugSets[type];
+  img.src = mugSets[type] || mugSets["peace"];
   img.style.width = "100%";
   img.style.maxWidth = "320px";
   img.style.borderRadius = "14px";
@@ -417,11 +417,12 @@ function seededIndex(seed, max){
 }
 
 const selected = list[seededIndex(seed, list.length)];
-document.getElementById("verse").innerText = "“" + selected.text + "”";
-document.getElementById("ref").innerText = selected.ref;
 
 const verseEl = document.getElementById("verse");
 verseEl.innerText = "“" + selected.text + "”";
+
+document.getElementById("ref").innerText = selected.ref;
+  
 verseEl.style.opacity = 1;
 
 /* SHARE */
