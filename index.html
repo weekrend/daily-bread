@@ -136,7 +136,7 @@ body {
   <div class="name" id="name"></div>
 
   <div class="verse-box" id="verseBox">
-    <div class="verse" id="verse">Loading...</div>
+    <div class="verse" id="verse" style="opacity:0;">Loading...</div>
     <div class="divider"></div>
     <div class="ref" id="ref"></div>
   </div>
@@ -395,6 +395,10 @@ const selected = list[seededIndex(seed, list.length)];
 document.getElementById("verse").innerText = "“" + selected.text + "”";
 document.getElementById("ref").innerText = selected.ref;
 
+const verseEl = document.getElementById("verse");
+verseEl.innerText = "“" + selected.text + "”";
+verseEl.style.opacity = 1;
+
 /* SHARE */
 function sharePage() {
   const url = new URL(window.location.href);
@@ -420,31 +424,29 @@ const mugSets = {
 /* SHARED MODE */
 if(sharedBy){
 
-  // Title already handled
+  // Title
+  document.getElementById("title").innerText =
+    "✝️ DAILY BREAD for you today\nshared by " + sharedBy + " ✨";
 
-  // Hide name/meta
+  // Hide unnecessary
   document.getElementById("name").style.display = "none";
-
-  // Hide share button
   document.getElementById("shareBtn").style.display = "none";
-
-  // Hide footer
   document.getElementById("footer").style.display = "none";
 
-  // Show CTA
-  document.getElementById("cta").style.display = "block";
+  // Show CTA card
+  document.getElementById("ctaCard").style.display = "block";
 
   document.getElementById("ctaText").innerHTML =
     'Enjoy your coffee with fresh <b>"Daily Bread"</b> every day ☕';
 
-  // Show only 1 image
+  // Mug image
   const container = document.getElementById("mugImages");
   container.innerHTML = "";
-  
+
   const img = document.createElement("img");
-  img.src = mugSets[type];
+  img.src = mugSets[type] || mugSets["peace"];
   img.alt = type + " mug preview";
-  
+
   container.appendChild(img);
 }
 </script>
