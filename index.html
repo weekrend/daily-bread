@@ -91,9 +91,12 @@ body {
 }
 
 .mug-row img {
-  width:80px;
-  border-radius:10px;
+  width: 100%;
+  max-width: 320px;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
 }
+  
 </style>
 </head>
 
@@ -337,26 +340,10 @@ function sharePage() {
 
 /* CTA IMAGES */
 const mugSets = {
-  love: [
-    "https://via.placeholder.com/80x80/ffd6e0",
-    "https://via.placeholder.com/80x80/ffc0cb",
-    "https://via.placeholder.com/80x80/ffb6c1"
-  ],
-  peace: [
-    "https://via.placeholder.com/80x80/cfe8e8",
-    "https://via.placeholder.com/80x80/b8d8d8",
-    "https://via.placeholder.com/80x80/a8cfcf"
-  ],
-  strength: [
-    "https://via.placeholder.com/80x80/e6dccf",
-    "https://via.placeholder.com/80x80/d4c4a8",
-    "https://via.placeholder.com/80x80/c2a97f"
-  ],
-  guidance: [
-    "https://via.placeholder.com/80x80/e6ddff",
-    "https://via.placeholder.com/80x80/d5c8ff",
-    "https://via.placeholder.com/80x80/c4b3ff"
-  ]
+  love: "assets/love.png",
+  peace: "assets/peace.png",
+  strength: "assets/strength.png",
+  guidance: "assets/guidance.png"
 };
 
 /* SHARED MODE */
@@ -382,9 +369,11 @@ if(sharedBy){
   // Show only 1 image
   const container = document.getElementById("mugImages");
   container.innerHTML = "";
-
+  
   const img = document.createElement("img");
-  img.src = mugSets[type][0];
+  img.src = mugSets[type];
+  img.alt = type + " mug preview";
+  
   container.appendChild(img);
 }
 </script>
