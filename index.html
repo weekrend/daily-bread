@@ -32,9 +32,10 @@ body {
 
 .title {
   font-size: 14px;
-  letter-spacing: 2px;
+  letter-spacing: 1.5px;
   color: #777;
   margin-bottom: 16px;
+  white-space: pre-line;
 }
 
 .name {
@@ -63,7 +64,6 @@ body {
   height: 2px;
   background: linear-gradient(to right, transparent, #b58b3a, transparent);
   margin: 16px auto;
-  border-radius: 2px;
 }
 
 .footer {
@@ -82,6 +82,18 @@ body {
   font-size: 14px;
   cursor: pointer;
 }
+
+.mug-row {
+  display:flex;
+  gap:8px;
+  justify-content:center;
+  margin:12px 0;
+}
+
+.mug-row img {
+  width:80px;
+  border-radius:10px;
+}
 </style>
 </head>
 
@@ -93,14 +105,14 @@ body {
   <div class="verse" id="verse">Loading...</div>
   <div class="divider"></div>
   <div class="ref" id="ref"></div>
-  <div class="footer">Scan again tomorrow ✨</div>
+  <div class="footer" id="footer">Scan again tomorrow ✨</div>
 
-  <!-- SHARE BUTTON -->
   <button id="shareBtn" onclick="sharePage()" class="share-btn">Share</button>
 
-  <!-- CTA -->
-  <div id="cta" style="display:none; margin-top:16px;">
-    <div style="font-size:13px; color:#888; margin-bottom:10px;" id="ctaText"></div>
+  <div id="cta" style="display:none;">
+    <div id="ctaText" style="font-size:14px; color:#666;"></div>
+    <div class="mug-row" id="mugImages"></div>
+
     <a href="https://your-etsy-link.com" target="_blank">
       <button class="share-btn">Get Your Daily Bread Mug ☕</button>
     </a>
@@ -122,8 +134,7 @@ const themes = {
   strength: "linear-gradient(160deg, #f4efe7, #ffffff)",
   guidance: "linear-gradient(160deg, #ece9ff, #ffffff)"
 };
-
-document.body.style.background = themes[type] || themes["peace"];
+document.body.style.background = themes[type];
 
 /* ICON */
 const icons = {
@@ -133,25 +144,26 @@ const icons = {
   guidance: "✨"
 };
 
-document.getElementById("title").innerText =
-  (icons[type] || "🍞") + " DAILY BREAD";
+/* TITLE */
+if(sharedBy){
+  document.getElementById("title").innerText =
+    "✝️ DAILY BREAD for you today\nshared by " + sharedBy + " ✨";
+} else {
+  document.getElementById("title").innerText =
+    (icons[type] || "🍞") + " DAILY BREAD";
+}
 
 /* META */
 let metaText = "";
-
 if(type === "love"){
   metaText = name + (date ? "\n" + date : "");
-}
-else if(type === "peace"){
+}else if(type === "peace"){
   metaText = name + "\n" + (msg || "Be still");
-}
-else if(type === "strength"){
+}else if(type === "strength"){
   metaText = name + "\n" + (msg || "Faith Over Fear");
-}
-else if(type === "guidance"){
+}else{
   metaText = name + "\n" + (msg || "Trust His Plan");
 }
-
 document.getElementById("name").innerText = metaText;
 
 /* FULL VERSE DATABASE (30 each) */
@@ -295,7 +307,7 @@ guidance: [
 
 };
 
-/* DAILY RANDOM */
+const list = verses[type] || verses["peace"];
 const today = new Date();
 const seed = today.getFullYear()*10000 + (today.getMonth()+1)*100 + today.getDate();
 
@@ -304,49 +316,64 @@ function seededIndex(seed, max){
   return Math.floor((x - Math.floor(x))*max);
 }
 
-const list = verses[type] || verses["peace"];
 const selected = list[seededIndex(seed, list.length)];
-
 document.getElementById("verse").innerText = "“" + selected.text + "”";
 document.getElementById("ref").innerText = selected.ref;
 
-if(type === "strength"){
-  document.getElementById("ref").innerText += " ✝️";
-}
-
-/* SHARE FUNCTION */
+/* SHARE */
 function sharePage() {
   const url = new URL(window.location.href);
-
-  if(name){
-    url.searchParams.set("sharedBy", name);
-  }
-
-  const finalLink = url.toString();
+  url.searchParams.set("sharedBy", name);
+  const link = url.toString();
 
   if (navigator.share) {
-    navigator.share({
-      title: "Daily Bread 🍞",
-      text: "Receive your daily word ✨",
-      url: finalLink
-    });
+    navigator.share({ title:"Daily Bread", url:link });
   } else {
-    navigator.clipboard.writeText(finalLink);
+    navigator.clipboard.writeText(link);
     alert("Link copied!");
   }
 }
 
+/* CTA IMAGES */
+const mugSets = {
+  love: [
+    "https://via.placeholder.com/80x80/ffd6e0",
+    "https://via.placeholder.com/80x80/ffc0cb",
+    "https://via.placeholder.com/80x80/ffb6c1"
+  ],
+  peace: [
+    "https://via.placeholder.com/80x80/cfe8e8",
+    "https://via.placeholder.com/80x80/b8d8d8",
+    "https://via.placeholder.com/80x80/a8cfcf"
+  ],
+  strength: [
+    "https://via.placeholder.com/80x80/e6dccf",
+    "https://via.placeholder.com/80x80/d4c4a8",
+    "https://via.placeholder.com/80x80/c2a97f"
+  ],
+  guidance: [
+    "https://via.placeholder.com/80x80/e6ddff",
+    "https://via.placeholder.com/80x80/d5c8ff",
+    "https://via.placeholder.com/80x80/c4b3ff"
+  ]
+};
+
 /* SHARED MODE */
 if(sharedBy){
-  document.getElementById("name").innerText =
-    sharedBy + " shared this daily bread for you today ✨";
 
   document.getElementById("shareBtn").style.display = "none";
-
+  document.getElementById("footer").style.display = "none";
   document.getElementById("cta").style.display = "block";
 
-  document.getElementById("ctaText").innerText =
-    sharedBy + " gets Daily Bread every day from this mug ☕";
+  document.getElementById("ctaText").innerHTML =
+    'Enjoy your coffee with fresh <b>"Daily Bread"</b> every day ☕';
+
+  const container = document.getElementById("mugImages");
+  mugSets[type].forEach(src=>{
+    const img = document.createElement("img");
+    img.src = src;
+    container.appendChild(img);
+  });
 }
 </script>
 
