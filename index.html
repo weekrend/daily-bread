@@ -202,21 +202,17 @@ function validateToken(name, type, token) {
 
 const params = new URLSearchParams(location.search);
 
-const name = params.get("name");
-const type = params.get("type");
-const token = params.get("t");
+const name = params.get("name") || "";
+const type = params.get("type") || "peace";
+const token = params.get("t") || "";
+const date = params.get("date") || "";
+const msg = params.get("msg") || "";
+const sharedBy = params.get("sharedBy") || "";
 
 // ❌ block invalid access
 if (!validateToken(name, type, token)) {
   window.location.href = "invalid.html";
 }
-  
-const params = new URLSearchParams(window.location.search);
-const name = params.get("name") || "";
-const type = params.get("type") || "peace";
-const date = params.get("date") || "";
-const msg = params.get("msg") || "";
-const sharedBy = params.get("sharedBy") || "";
 
 const bgMap = {
   love: "assets/bg-love.png",
@@ -467,34 +463,34 @@ function sharePage() {
   }
 }
 
-/* SHARED MODE */
-if(sharedBy){
+// /* SHARED MODE */
+// if(sharedBy){
 
-  // Title
-  document.getElementById("title").innerText =
-    "✝️ DAILY BREAD 🥖 for you today\nshared by " + sharedBy;
+//   // Title
+//   document.getElementById("title").innerText =
+//     "✝️ DAILY BREAD 🥖 for you today\nshared by " + sharedBy;
 
-  // Hide unnecessary
-  document.getElementById("name").style.display = "none";
-  document.getElementById("shareBtn").style.display = "none";
-  document.getElementById("footer").style.display = "none";
+//   // Hide unnecessary
+//   document.getElementById("name").style.display = "none";
+//   document.getElementById("shareBtn").style.display = "none";
+//   document.getElementById("footer").style.display = "none";
 
-  // Show CTA card
-  document.getElementById("ctaCard").style.display = "block";
+//   // Show CTA card
+//   document.getElementById("ctaCard").style.display = "block";
 
-  document.getElementById("ctaText").innerHTML =
-    'Enjoy your coffee with fresh <b>"Daily Bread"</b> every day ☕';
+//   document.getElementById("ctaText").innerHTML =
+//     'Enjoy your coffee with fresh <b>"Daily Bread"</b> every day ☕';
 
-  // Mug image
-  const container = document.getElementById("mugImages");
-  container.innerHTML = "";
+//   // Mug image
+//   const container = document.getElementById("mugImages");
+//   container.innerHTML = "";
 
-  const img = document.createElement("img");
-  img.src = mugSets[type] || mugSets["peace"];
-  img.alt = type + " mug preview";
+//   const img = document.createElement("img");
+//   img.src = mugSets[type] || mugSets["peace"];
+//   img.alt = type + " mug preview";
 
-  container.appendChild(img);
-}
+//   container.appendChild(img);
+// }
 </script>
 
 </body>
