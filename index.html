@@ -27,6 +27,12 @@ body {
   margin: 20px auto;
 }
 
+#verseCard {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 .verse-box {
   padding: 32px 20px;
   border-radius: 20px;
@@ -54,10 +60,13 @@ body {
   white-space: pre-line;
 }
 
+.verse {
+  color: #2b2b2b;
+  text-shadow: 0 1px 2px rgba(255,255,255,0.5);
+}
+
 .ref {
-  font-size: 13px;
-  color: #666;
-  margin-bottom: 20px;
+  color: #555;
 }
 
 .divider {
@@ -182,7 +191,8 @@ const bgMap = {
 };
 
 const verseBox = document.getElementById("verseBox");
-verseBox.style.backgroundImage = `url('${bgMap[type]}')`;
+document.getElementById("verseCard").style.backgroundImage =
+  `url('${bgMap[type]}')`;
 
 /* THEMES */
 const themes = {
