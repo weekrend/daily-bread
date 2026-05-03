@@ -19,10 +19,6 @@ body {
   color: #2c2c2c;
 }
 
-.strength-accent {
-  color: #b58b3a;
-}
-
 .card {
   backdrop-filter: blur(20px);
   background: rgba(255,255,255,0.6);
@@ -74,6 +70,18 @@ body {
   font-size: 12px;
   color: #aaa;
 }
+
+.share-btn {
+  margin-top: 12px;
+  padding: 10px;
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  background: #b58b3a;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+}
 </style>
 </head>
 
@@ -86,6 +94,17 @@ body {
   <div class="divider"></div>
   <div class="ref" id="ref"></div>
   <div class="footer">Scan again tomorrow ✨</div>
+
+  <!-- SHARE BUTTON -->
+  <button id="shareBtn" onclick="sharePage()" class="share-btn">Share</button>
+
+  <!-- CTA -->
+  <div id="cta" style="display:none; margin-top:16px;">
+    <div style="font-size:13px; color:#888; margin-bottom:10px;" id="ctaText"></div>
+    <a href="https://your-etsy-link.com" target="_blank">
+      <button class="share-btn">Get Your Daily Bread Mug ☕</button>
+    </a>
+  </div>
 </div>
 
 <script>
@@ -94,6 +113,7 @@ const name = params.get("name") || "";
 const type = params.get("type") || "peace";
 const date = params.get("date") || "";
 const msg = params.get("msg") || "";
+const sharedBy = params.get("sharedBy") || "";
 
 /* THEMES */
 const themes = {
@@ -103,19 +123,7 @@ const themes = {
   guidance: "linear-gradient(160deg, #ece9ff, #ffffff)"
 };
 
-// const themes = {
-//   love: "linear-gradient(160deg, #ffe4ec, #fff)",
-//   peace: "linear-gradient(160deg, #dfe9f3, #ffffff)",
-//   strength: "linear-gradient(160deg, #2c2c2c, #000000)",
-//   guidance: "linear-gradient(160deg, #ece9ff, #ffffff)"
-// };
-
 document.body.style.background = themes[type] || themes["peace"];
-
-// if(type === "strength"){
-//   document.body.style.color = "#f5f5f5";
-//   document.querySelector(".card").style.background = "rgba(0,0,0,0.4)";
-// }
 
 /* ICON */
 const icons = {
@@ -128,7 +136,7 @@ const icons = {
 document.getElementById("title").innerText =
   (icons[type] || "🍞") + " DAILY BREAD";
 
-/* META DISPLAY */
+/* META */
 let metaText = "";
 
 if(type === "love"){
@@ -287,7 +295,7 @@ guidance: [
 
 };
 
-/* DAILY SEED */
+/* DAILY RANDOM */
 const today = new Date();
 const seed = today.getFullYear()*10000 + (today.getMonth()+1)*100 + today.getDate();
 
@@ -305,7 +313,41 @@ document.getElementById("ref").innerText = selected.ref;
 if(type === "strength"){
   document.getElementById("ref").innerText += " ✝️";
 }
-  
+
+/* SHARE FUNCTION */
+function sharePage() {
+  const url = new URL(window.location.href);
+
+  if(name){
+    url.searchParams.set("sharedBy", name);
+  }
+
+  const finalLink = url.toString();
+
+  if (navigator.share) {
+    navigator.share({
+      title: "Daily Bread 🍞",
+      text: "Receive your daily word ✨",
+      url: finalLink
+    });
+  } else {
+    navigator.clipboard.writeText(finalLink);
+    alert("Link copied!");
+  }
+}
+
+/* SHARED MODE */
+if(sharedBy){
+  document.getElementById("name").innerText =
+    sharedBy + " shared this daily bread for you today ✨";
+
+  document.getElementById("shareBtn").style.display = "none";
+
+  document.getElementById("cta").style.display = "block";
+
+  document.getElementById("ctaText").innerText =
+    sharedBy + " gets Daily Bread every day from this mug ☕";
+}
 </script>
 
 </body>
