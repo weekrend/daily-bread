@@ -15,7 +15,9 @@ body {
 .container {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;   /* 👈 key change */
+  padding-top: 40px;         /* 👈 add space */
+  padding-bottom: 40px;
   min-height: 100vh;
 }
 
@@ -23,6 +25,7 @@ body {
   background: rgba(255,255,255,0.9);
   backdrop-filter: blur(12px);
   border-radius: 24px;
+  margin-top: 10px;
   padding: 30px 20px;
   width: 90%;
   max-width: 420px;
@@ -96,6 +99,23 @@ body {
   color: #999;
   margin-bottom: 2px;
 }
+
+.message {
+  font-size: 15px;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+
+.message p {
+  margin: 10px 0;
+}
+
+.message .highlight {
+  margin-top: 16px;
+  font-weight: 600;
+  color: #333;
+}
   
 </style>
 </head>
@@ -108,9 +128,17 @@ body {
     <div class="title">🍞 DAILY BREAD</div>
 
     <div class="message">
-      Each Daily Bread mug comes with a unique QR code that gives you a fresh Bible verse every day.<br><br>
-      Start your morning with encouragement, reflection, and peace—right from your coffee.<br><br>
-      Get your Daily Bread mug to unlock your daily word 🌾
+      <p>
+        Each <b>Daily Bread</b> mug comes with a unique QR code that gives you a fresh Bible verse every day.
+      </p>
+    
+      <p>
+        Start your morning with encouragement, reflection, and peace—right from your coffee.
+      </p>
+    
+      <p class="highlight">
+        Get your Daily Bread mug to unlock your daily word 🌾
+      </p>
     </div>
 
     <!-- 🔥 Mug showcase -->
