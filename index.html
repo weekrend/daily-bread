@@ -10,13 +10,9 @@
 
 body {
   margin: 0;
-  height: 100vh;
   font-family: 'Inter', sans-serif;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(160deg, #dfe9f3, #ffffff);
-  color: #2c2c2c;
+  background: linear-gradient(160deg, #ece9ff, #ffffff);
+  display: block;
 }
 
 .card {
@@ -28,6 +24,18 @@ body {
   max-width: 420px;
   text-align: center;
   box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  margin: 20px auto;
+}
+
+.verse-box {
+  padding: 32px 20px;
+  border-radius: 20px;
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
 }
 
 .title {
@@ -44,19 +52,6 @@ body {
   margin-bottom: 18px;
   opacity: 0.85;
   white-space: pre-line;
-}
-
-.verse-box {
-  padding: 32px 20px;
-  border-radius: 20px;
-
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-
-  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
-
-  color: #2b2b2b;
 }
 
 .ref {
@@ -134,35 +129,43 @@ body {
 
 <body>
 
-<div class="card">
-  <div class="title" id="title">🍞 DAILY BREAD</div>
+<!-- CARD 1 (VERSE) -->
+<div class="card" id="verseCard">
+  <div class="title" id="title"></div>
+
   <div class="name" id="name"></div>
-  <div class="verse" id="verse">Loading...</div>
-  <div class="divider"></div>
-  <div class="ref" id="ref"></div>
+
+  <div class="verse-box" id="verseBox">
+    <div class="verse" id="verse">Loading...</div>
+    <div class="divider"></div>
+    <div class="ref" id="ref"></div>
+  </div>
+
   <div class="footer" id="footer">Scan again tomorrow ✨</div>
 
   <button id="shareBtn" onclick="sharePage()" class="share-btn">Share</button>
-
-  <div id="cta" style="display:none;">
-    <div id="ctaText" style="font-size:14px; color:#666;"></div>
-    <div class="mug-row" id="mugImages"></div>
-
-    <a href="https://your-etsy-link.com" target="_blank">
-      <button class="share-btn">Get Your Daily Bread Mug ☕</button>
-    </a>
-  </div>
-  
-  <div class="footer-brand">
-    <div class="brand-top">
-      <img src="assets/logo.png"> <span>Weekrend Project</span>
-    </div>
-    <div class="brand-product">© 2026 Daily Bread ✨</div>
-    <!-- //<div class="brand-copy">© 2026</div> -->
-  </div>
-  
 </div>
 
+
+<!-- CARD 2 (CTA) -->
+<div class="card" id="ctaCard" style="display:none;">
+
+  <div id="ctaText" style="font-size:14px; color:#666;"></div>
+
+  <div class="mug-row" id="mugImages"></div>
+
+  <a href="https://your-etsy-link.com" target="_blank">
+    <button class="share-btn">Get Your Daily Bread Mug ☕</button>
+  </a>
+
+  <div class="footer-brand">
+    <div class="brand-top">
+      <img src="assets/logo.png"> <span>Weekrend</span>
+    </div>
+    <div class="brand-product">© 2026 Daily Bread ✨</div>
+  </div>
+
+</div>
 <script>
 const params = new URLSearchParams(window.location.search);
 const name = params.get("name") || "";
@@ -178,7 +181,7 @@ const bgMap = {
   guidance: "assets/bg-guidance.png"
 };
 
-const verseBox = document.querySelector(".verse-box");
+const verseBox = document.getElementById("verseBox");
 verseBox.style.backgroundImage = `url('${bgMap[type]}')`;
 
 /* THEMES */
@@ -200,9 +203,26 @@ const icons = {
 
 /* TITLE */
 if(sharedBy){
-  document.getElementById("title").innerText =
-    "✝️ DAILY BREAD for you today\nshared by " + sharedBy + " ✨";
+
   document.getElementById("name").style.display = "none";
+  document.getElementById("shareBtn").style.display = "none";
+  document.getElementById("footer").style.display = "none";
+
+  document.getElementById("ctaCard").style.display = "block";
+
+  document.getElementById("ctaText").innerHTML =
+    'Enjoy your coffee with fresh <b>"Daily Bread"</b> every day ☕';
+
+  const container = document.getElementById("mugImages");
+  container.innerHTML = "";
+
+  const img = document.createElement("img");
+  img.src = mugSets[type];
+  img.style.width = "100%";
+  img.style.maxWidth = "320px";
+  img.style.borderRadius = "14px";
+
+  container.appendChild(img);
 } else {
   document.getElementById("title").innerText =
     (icons[type] || "🍞") + " DAILY BREAD";
