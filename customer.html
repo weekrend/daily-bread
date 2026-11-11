@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Bread</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 24px; color: #333; text-align: center; }
+    main { max-width: 420px; margin: 48px auto; }
+  </style>
+</head>
+<body>
+  <main id="status">Loading your Daily Bread…</main>
+  <script>
+    const SECRET = "dailybread_secret_key";
+
+    function encodeToken(value) {
+      const bytes = new TextEncoder().encode(value);
+      let binary = "";
+      bytes.forEach(byte => binary += String.fromCharCode(byte));
+      return btoa(binary).replace(/=/g, "");
+    }
+
+    async function openCustomer() {
+      const id = new URLSearchParams(location.search).get("id") || "";
+      if (!/^[A-Za-z0-9_-]{12}$/.test(id)) {
+        location.replace("invalid.html");
+        return;
+      }
+
+      try {
+        const response = await fetch("customers.json", { cache: "no-store" });
+        if (!response.ok) throw new Error("Registry unavailable");
+        const customers = await response.json();
+        const customer = customers[id];
+
+        if (!customer || !customer.name || !["love", "peace", "strength", "guidance"].includes(customer.type)) {
+          location.replace("invalid.html");
+          return;
+        }
+
+        const params = new URLSearchParams({
+          name: customer.name,
+          type: customer.type,
+          t: encodeToken(customer.name + "|" + customer.type + "|" + SECRET)
+        });
+        if (customer.date) params.set("date", customer.date);
+        if (customer.msg) params.set("msg", customer.msg);
+        location.replace("index.html?" + params.toString());
+      } catch (error) {
+        document.getElementById("status").textContent = "Daily Bread is temporarily unavailable. Please try again later.";
+      }
+    }
+
+    openCustomer();
+  </script>
+</body>
+</html>
