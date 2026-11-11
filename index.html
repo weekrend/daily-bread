@@ -198,34 +198,41 @@ body {
 
 </div>
 <script>
+(function () {
+const routeParams = new URLSearchParams(location.search);
+if (routeParams.has("i")) {
+  location.replace("customer.html?id=" + encodeURIComponent(routeParams.get("i") || ""));
+  return;
+}
+
 const SECRET = "dailybread_secret_key";
+
+function encodeToken(value) {
+  const bytes = new TextEncoder().encode(value);
+  let binary = "";
+  bytes.forEach(byte => binary += String.fromCharCode(byte));
+  return btoa(binary).replace(/=/g, "");
+}
 
 function validateToken(name, type, token) {
   const raw = name + "|" + type + "|" + SECRET;
-  const expected = btoa(raw).replace(/=/g, "");
+  const expected = encodeToken(raw);
   return expected === token;
 }
 
 const params = new URLSearchParams(location.search);
 
-const typeCodes = {
-  l: "love",
-  p: "peace",
-  s: "strength",
-  g: "guidance"
-};
-const compactLink = params.has("n") || params.has("c");
-const name = compactLink ? (params.get("n") || "") : (params.get("name") || "");
-const type = compactLink ? typeCodes[params.get("c")] : (params.get("type") || "peace");
+const name = params.get("name") || "";
+const type = params.get("type") || "peace";
 const token = params.get("t") || "";
-const date = compactLink ? (params.get("d") || "") : (params.get("date") || "");
-const msg = compactLink ? (params.get("m") || "") : (params.get("msg") || "");
+const date = params.get("date") || "";
+const msg = params.get("msg") || "";
 const sharedBy = params.get("sharedBy") || "";
 
-// Compact links omit the old redundant token. Keep accepting and validating
-// legacy links so existing printed QR codes continue to work.
-if (!name || !type || (!compactLink && !validateToken(name, type, token))) {
-  window.location.href = "invalid.html";
+// Keep validating existing printed links with their original token.
+if (!name || !type || !validateToken(name, type, token)) {
+  window.location.replace("invalid.html");
+  return;
 }
 
 const bgMap = {
@@ -480,6 +487,7 @@ function sharePage() {
     alert("Link copied!");
   }
 }
+window.sharePage = sharePage;
 
 // /* SHARED MODE */
 // if(sharedBy){
@@ -509,6 +517,7 @@ function sharePage() {
 
 //   container.appendChild(img);
 // }
+})();
 </script>
 
 </body>
