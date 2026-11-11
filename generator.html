@@ -24,6 +24,16 @@ input, select {
   border: 1px solid #ccc;
 }
 
+textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-family: monospace;
+}
+
 button {
   width: 100%;
   padding: 12px;
@@ -85,6 +95,13 @@ button:hover {
 
 <button onclick="copy()">Copy Link</button>
 
+<label for="registryEntry">New customer registry entry</label>
+<textarea id="registryEntry" rows="7" readonly placeholder="Generate a link to create a registry entry"></textarea>
+<div class="result">
+  After generating a QR, download the updated <code>customers.json</code> and publish it to GitHub Pages. The new QR will only work after that file is deployed.
+</div>
+<button onclick="downloadRegistry()">Download customers.json</button>
+
 <div class="qr">
   <img id="qrImg" width="200" />
   <br>
@@ -93,15 +110,27 @@ button:hover {
 
 <script>
 let currentQR = "";
+let registryData = null;
 
-function generate() {
-  const base = "https://weekrend.github.io/daily-bread/";
-  const typeCodes = {
-    love: "l",
-    peace: "p",
-    strength: "s",
-    guidance: "g"
-  };
+async function loadRegistry() {
+  if (registryData !== null) return registryData;
+
+  const response = await fetch("customers.json", { cache: "no-store" });
+  if (!response.ok) throw new Error("Could not load customers.json");
+  registryData = await response.json();
+  return registryData;
+}
+
+function createID() {
+  const bytes = new Uint8Array(9);
+  crypto.getRandomValues(bytes);
+  return btoa(String.fromCharCode(...bytes))
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/g, "");
+}
+
+async function generate() {
 
   const nameRaw = document.getElementById("name").value.trim();
   const type = document.getElementById("type").value;
@@ -113,23 +142,51 @@ function generate() {
     return;
   }
 
-  const url = new URL(base);
-  url.searchParams.set("n", nameRaw);
-  url.searchParams.set("c", typeCodes[type]);
+  try {
+    await loadRegistry();
+  } catch (error) {
+    alert("Could not load customers.json. Open the published generator page and try again.");
+    return;
+  }
+
+  let id = createID();
+  while (Object.prototype.hasOwnProperty.call(registryData, id)) id = createID();
+
+  const customer = { name: nameRaw, type };
 
   if (type === "love" && dateRaw) {
-    url.searchParams.set("d", dateRaw);
+    customer.date = dateRaw;
   }
 
   if (type !== "love" && msgRaw) {
-    url.searchParams.set("m", msgRaw);
+    customer.msg = msgRaw;
   }
 
-  document.getElementById("result").innerText = url.toString();
+  registryData[id] = customer;
 
-  // Download a high-resolution QR; standard correction keeps the code less dense.
+  const url = new URL("./", location.href);
+  url.searchParams.set("i", id);
+  document.getElementById("result").innerText = url.toString();
+  document.getElementById("registryEntry").value = JSON.stringify({ [id]: customer }, null, 2);
+
+  // Download a high-resolution QR with standard error correction.
   currentQR = "https://api.qrserver.com/v1/create-qr-code/?size=600x600&ecc=M&margin=4&data=" + encodeURIComponent(url.toString());
   document.getElementById("qrImg").src = currentQR;
+}
+
+function downloadRegistry() {
+  if (registryData === null) {
+    alert("Generate at least one QR code first.");
+    return;
+  }
+
+  const file = new Blob([JSON.stringify(registryData, null, 2)], { type: "application/json" });
+  const fileURL = URL.createObjectURL(file);
+  const a = document.createElement("a");
+  a.href = fileURL;
+  a.download = "customers.json";
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(fileURL), 1000);
 }
 
 function copy() {
