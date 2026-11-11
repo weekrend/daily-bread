@@ -208,15 +208,23 @@ function validateToken(name, type, token) {
 
 const params = new URLSearchParams(location.search);
 
-const name = params.get("name") || "";
-const type = params.get("type") || "peace";
+const typeCodes = {
+  l: "love",
+  p: "peace",
+  s: "strength",
+  g: "guidance"
+};
+const compactLink = params.has("n") || params.has("c");
+const name = compactLink ? (params.get("n") || "") : (params.get("name") || "");
+const type = compactLink ? typeCodes[params.get("c")] : (params.get("type") || "peace");
 const token = params.get("t") || "";
-const date = params.get("date") || "";
-const msg = params.get("msg") || "";
+const date = compactLink ? (params.get("d") || "") : (params.get("date") || "");
+const msg = compactLink ? (params.get("m") || "") : (params.get("msg") || "");
 const sharedBy = params.get("sharedBy") || "";
 
-// ❌ block invalid access
-if (!validateToken(name, type, token)) {
+// Compact links omit the old redundant token. Keep accepting and validating
+// legacy links so existing printed QR codes continue to work.
+if (!name || !type || (!compactLink && !validateToken(name, type, token))) {
   window.location.href = "invalid.html";
 }
 
