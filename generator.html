@@ -92,19 +92,16 @@ button:hover {
 </div>
 
 <script>
-// 🔐 MUST MATCH index.html
-const SECRET = "dailybread_secret_key";
-
 let currentQR = "";
-
-// 🔐 Generate token
-function generateToken(name, type) {
-  const raw = name + "|" + type + "|" + SECRET;
-  return btoa(raw).replace(/=/g, "");
-}
 
 function generate() {
   const base = "https://weekrend.github.io/daily-bread/";
+  const typeCodes = {
+    love: "l",
+    peace: "p",
+    strength: "s",
+    guidance: "g"
+  };
 
   const nameRaw = document.getElementById("name").value.trim();
   const type = document.getElementById("type").value;
@@ -116,27 +113,22 @@ function generate() {
     return;
   }
 
-  // 🔐 generate token (use RAW value)
-  const token = generateToken(nameRaw, type);
-
-  const name = encodeURIComponent(nameRaw);
-  const date = encodeURIComponent(dateRaw);
-  const msg = encodeURIComponent(msgRaw);
-
-  let url = base + "?name=" + name + "&type=" + type + "&t=" + token;
+  const url = new URL(base);
+  url.searchParams.set("n", nameRaw);
+  url.searchParams.set("c", typeCodes[type]);
 
   if (type === "love" && dateRaw) {
-    url += "&date=" + date;
+    url.searchParams.set("d", dateRaw);
   }
 
   if (type !== "love" && msgRaw) {
-    url += "&msg=" + msg;
+    url.searchParams.set("m", msgRaw);
   }
 
-  document.getElementById("result").innerText = url;
+  document.getElementById("result").innerText = url.toString();
 
-  // QR
-  currentQR = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(url);
+  // Download a high-resolution QR; standard correction keeps the code less dense.
+  currentQR = "https://api.qrserver.com/v1/create-qr-code/?size=600x600&ecc=M&margin=4&data=" + encodeURIComponent(url.toString());
   document.getElementById("qrImg").src = currentQR;
 }
 
